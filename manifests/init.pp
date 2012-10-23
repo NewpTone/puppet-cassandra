@@ -10,23 +10,20 @@ class cassandra {
   key_server        => "pgp.mit.edu",
   pin               => "500",
   include_src       => true
-}
-        group { "cassandra":
-		ensure => present,
-		gid => "900",
-	}
-
-	user { "cassandra":
-		ensure => present,
-		comment => "Cassandra",
-		password => "!!",
-		uid => "900",
-		gid => "900",
-		shell => "/bin/bash",
-		home => "/home/cassandra",
-		require => Group["cassandra"],
-	}
-		
+  }
 	
+  package {'cassandra':
+     name 	=> 'cassandra',
+     ensure 	=> 'present', 
+     require 	=> Exec['apt-get update'],
+  }
+
+
+ exec { 'apt-get update': 
+    path	        => '/usr/bin',
+    refreshonly		=> true,
+    subscribe   	=> [ Apt::Source["cassandra"]],
+    logoutput  		=> true,
+  }
 
 }
